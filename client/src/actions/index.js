@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { history } from '../history/history';
 
+import * as ws from '../utils/utils';
+
 import {
 	AUTH_USER,
 	UNAUTH_USER,
@@ -66,6 +68,8 @@ export function authError(error) {
 export function logoutUser() {
 	localStorage.removeItem('token');
 	localStorage.removeItem('user');
+	
+	console.log('logout action', ws);
 
 	return { type: UNAUTH_USER };
 }
@@ -113,9 +117,7 @@ export function joinChat(username) {
 	return function(dispatch) {
 		dispatch({
 			type: JOIN_CHAT,
-			payload: {
-				username: `${username} joined to chat`
-			}
+			payload: `${username} joined to chat`
 		});
 	};
 }
@@ -125,9 +127,7 @@ export function leaveChat(username) {
 	return function(dispatch) {
 		dispatch({
 			type: LEAVE_CHAT,
-			payload: {
-				username: `${username} left chat`
-			}
+			payload: `${username} left chat`
 		});
 	};
 }

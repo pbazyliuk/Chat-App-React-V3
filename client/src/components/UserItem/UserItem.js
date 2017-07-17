@@ -8,7 +8,7 @@ class UserItem extends React.Component {
 	render() {
 		const { id, firstname, createdAt } = this.props;
 
-		console.error(this.props);
+		// console.error(this.props);
 		return (
 			<Link to={`/chat/${id}`} className={styles['chat-list__link']}>
 				<li className={styles['chat-list__item']}>

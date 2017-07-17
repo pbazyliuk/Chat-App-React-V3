@@ -29,7 +29,7 @@ class WebSockets extends React.Component {
 
 	componentWillUnmount() {
 		// TODO: add event for closing socket
-		ws.disconnect();
+		
 	}
 
 	shouldComponentUpdate() {

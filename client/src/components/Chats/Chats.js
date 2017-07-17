@@ -3,7 +3,6 @@ import ChatsNavbar from '../ChatsNavbar/ChatsNavbar';
 import UsersList from '../UsersList/UsersList';
 import ChatsDetails from '../ChatsDetails/ChatsDetails';
 import ChatsMenu from '../ChatsMenu/ChatsMenu';
-
 import io from 'socket.io-client';
 
 import styles from './Chats.scss';

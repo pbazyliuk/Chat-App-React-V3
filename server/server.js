@@ -59,42 +59,27 @@ io
 			);
 		});
 
-		socket
-			// .on('add-message', chatMessageHandler)
-			// .on('add-chat', chatHandler)
-			.on('leave', disconnectHandler);
+		socket.on('disconnect', disconnectHandler);
 
-		// function chatHandler(chat) {
-		//   console.log('chat recieved from client - ', chat);
-		//   io.emit('chat', chat);
-		// }
-
-		// function chatMessageHandler(message) {
-		//   io.emit('message',
-		//   {
-		//     userId: message.userId,
-		//     text: message.text,
-		//     timestamp: message.timestamp,
-		//     userName: message.userName
-		//   });
-		// }
-
-		function disconnectHandler(val) {
+		function disconnectHandler() {
 			console.log('leave');
-			var obj = { isLogged: false };
-			User.findOneAndUpdate({ _id: socket.decoded_token.sub }, obj, function(
-				err,
-				user
-			) {
-				return io.emit(
-					'leave',
-					{
-						user: user.firstname,
-						time: Date.now()
-					},
-					console.log('leave', user.firstname)
-				);
-			});
+			socket.broadcast.emit('leave', 'username');
+			// socket.disconnect(true);
+
+			// var obj = { isLogged: false };
+			// User.findOneAndUpdate({ _id: socket.decoded_token.sub }, obj, function(
+			// 	err,
+			// 	user
+			// ) {
+			// 	return io.emit(
+			// 		'leave',
+			// 		{
+			// 			user: user.firstname,
+			// 			time: Date.now()
+			// 		},
+			// 		console.log('leave', user.firstname)
+			// 	);
+			// });
 		}
 	});
 

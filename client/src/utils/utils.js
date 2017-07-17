@@ -1,11 +1,12 @@
 import io from 'socket.io-client';
-export { sendMessage, initConnection, addListener };
+export { sendMessage, initConnection, addListener, socket };
 
 let socket;
 const listeners = {};
 
 function initConnection(message) {
 	if (!socket) {
+		console.error('New Socket');
 		connect();
 	}
 
@@ -25,12 +26,8 @@ function connect() {
 			.emit('authenticate', { token: localStorage.getItem('token') })
 			.on('join', function(val) {
 				console.log('join', val.user);
-				// getAllUsers
-				//   .subscribe(
-				//       allUserData => store.dispatch(
-				//       new LoadChatListActions(allUserData)
-				//       )
-				//   );
+				console.log(socket);
+				onJoin(val.user);
 			});
 
 		socket.on('message', onMessage);
@@ -44,8 +41,7 @@ function onMessage(msg) {
 }
 
 function onJoin(username) {
-	console.log('onJoin');
-	console.log(username);
+	console.log('onJoin utils method ===', username);
 	fireListeners('join', username);
 }
 
@@ -60,10 +56,6 @@ function send(message) {
 
 function sendMessage(message) {
 	initConnection(message);
-}
-
-function disconnect() {
-	onLeave();
 }
 
 function fireListeners(event, payload) {

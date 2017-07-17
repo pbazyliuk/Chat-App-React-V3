@@ -71,14 +71,14 @@ export default function(state = INITIAL_APPLICATION_STATE, action) {
 
 		case LEAVE_CHAT: {
 			{
-				// let clonedState = { ...state };
+				let clonedState = { ...state };
 
-				// clonedState.uiState.authenticated = false;
-				// clonedState.uiState.error = '';
-				// clonedState.storeData.users = [];
-				// clonedState.storeData.chats = [];
-				// clonedState.storeData.messages = [];
-				// clonedState.uiState.user = {};
+				clonedState.uiState.authenticated = false;
+				clonedState.uiState.error = '';
+				clonedState.storeData.users = [];
+				clonedState.storeData.chats = [];
+				clonedState.storeData.messages = [];
+				clonedState.uiState.user = {};
 
 				return clonedState;
 			}
