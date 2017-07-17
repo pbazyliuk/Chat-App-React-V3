@@ -12,7 +12,9 @@ class WebSockets extends React.Component {
 		this.ROOT_URL = 'http://localhost:8090';
 	}
 
-	componentWillReceiveProps({ user }) {
+	componentWillMount() {
+		const { user } = this.props;
+
 		if (user) {
 			const { sendMessage, joinChat, leaveChat } = this.props;
 
@@ -20,8 +22,7 @@ class WebSockets extends React.Component {
 
 			ws.initConnection();
 
-			// ws.addListener('message', sendMessage);
-
+			ws.addListener('message', sendMessage);
 			ws.addListener('join', joinChat);
 			ws.addListener('leave', leaveChat);
 		}
@@ -29,7 +30,7 @@ class WebSockets extends React.Component {
 
 	componentWillUnmount() {
 		// TODO: add event for closing socket
-		
+		ws.disconnect();
 	}
 
 	shouldComponentUpdate() {

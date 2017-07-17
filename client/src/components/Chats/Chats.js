@@ -7,6 +7,11 @@ import io from 'socket.io-client';
 
 import styles from './Chats.scss';
 
+import WebSockets from '../../containers/WebSockets';
+import MessagesNavbar from '../MessagesNavbar/MessagesNavbar';
+import MessagesList from '../MessagesList/MessagesList';
+import MessagesInput from '../MessagesInput/MessagesInput';
+
 // const ROOT_URL = 'http://localhost:8090';
 
 class Chats extends React.Component {
@@ -54,6 +59,7 @@ class Chats extends React.Component {
 
 		return (
 			<div className={styles['wrapper']}>
+				<WebSockets />
 				<aside
 					className={styles['aside-part']}
 					style={this.state.isToggleOn ? collapseWidth : {}}
@@ -70,7 +76,10 @@ class Chats extends React.Component {
 					className={styles['main-part']}
 					style={this.state.isToggleOn ? expandWidth : {}}
 				>
-					<ChatsDetails />
+					{/* <ChatsDetails /> */}
+					<MessagesNavbar />
+					<MessagesList />
+					<MessagesInput />
 				</div>
 			</div>
 		);

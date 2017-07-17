@@ -44,6 +44,7 @@ io
 	.on('authenticated', socket => {
 		console.log('connect');
 		var obj = { isLogged: true };
+		var userName;
 
 		User.findOneAndUpdate({ _id: socket.decoded_token.sub }, obj, function(
 			err,
@@ -57,29 +58,35 @@ io
 				},
 				console.log('join', user.firstname)
 			);
+			userName = user.firstname;
+			console.log(userName);
 		});
 
 		socket.on('disconnect', disconnectHandler);
 
+		socket.on('message', msg => {
+			console.log(msg, userName);
+			io.emit('message', { message: msg, user: userName });
+		});
+
 		function disconnectHandler() {
 			console.log('leave');
-			socket.broadcast.emit('leave', 'username');
-			// socket.disconnect(true);
+			socket.emit('leave', 'username');
 
-			// var obj = { isLogged: false };
-			// User.findOneAndUpdate({ _id: socket.decoded_token.sub }, obj, function(
-			// 	err,
-			// 	user
-			// ) {
-			// 	return io.emit(
-			// 		'leave',
-			// 		{
-			// 			user: user.firstname,
-			// 			time: Date.now()
-			// 		},
-			// 		console.log('leave', user.firstname)
-			// 	);
-			// });
+			var obj = { isLogged: false };
+			User.findOneAndUpdate({ _id: socket.decoded_token.sub }, obj, function(
+				err,
+				user
+			) {
+				return io.emit(
+					'leave',
+					{
+						user: user.firstname,
+						time: Date.now()
+					},
+					console.log('leave', user.firstname)
+				);
+			});
 		}
 	});
 

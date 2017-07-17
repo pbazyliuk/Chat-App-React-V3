@@ -83,6 +83,17 @@ export default function(state = INITIAL_APPLICATION_STATE, action) {
 				return clonedState;
 			}
 		}
+		case SEND_MESSAGE: {
+			{
+				let clonedState = { ...state };
+
+				console.log(action.payload);
+
+				clonedState.storeData.messages.push(action.payload);
+
+				return clonedState;
+			}
+		}
 
 		default:
 			return state;

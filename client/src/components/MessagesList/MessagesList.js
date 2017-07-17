@@ -1,31 +1,45 @@
-import React from 'react'
-import Message from '../Message/Message'
+import React from 'react';
+import Message from '../Message/Message';
 
-import MESSAGES from '../../data/messages.js'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux';
 
-import styles from './MessagesList.scss'
+import * as actions from '../../actions/index';
+
+import MESSAGES from '../../data/messages.js';
+import PropTypes from 'prop-types';
+
+import styles from './MessagesList.scss';
 
 class MessagesList extends React.Component {
-  render () {
-    return (
-      <div>
-        {/* <div>ID: {this.props.id}</div> */}
-        <ul className={styles['message-list']} >{MESSAGES.map((message) => {
-          if (message.chatId === (+this.props.id)) {
-            return (
-              <Message key={message.id} message={message} />
-            )
-          }
-        })}
-        </ul>
-      </div>
-    )
-  }
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		const arr = [1, 2, 3];
+		console.log(this.props.messages);
+		return (
+			<div>
+				<ul className={styles['message-list']}>
+					{arr.map(item => {
+						return (
+							<li>
+								{item}
+							</li>
+						);
+					})}
+				</ul>
+			</div>
+		);
+	}
 }
 
 MessagesList.propTypes = {
-  id: PropTypes.string.isRequired
-}
+	id: PropTypes.string.isRequired
+};
 
-export default MessagesList
+const mapStateToProps = state => {
+	return { messages: state.applicationState.storeData.messages };
+};
+
+export default connect(mapStateToProps, actions)(MessagesList);

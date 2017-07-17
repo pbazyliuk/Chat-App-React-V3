@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-export { sendMessage, initConnection, addListener, socket };
+export { sendMessage, initConnection, addListener, socket, disconnect };
 
 let socket;
 const listeners = {};
@@ -55,6 +55,7 @@ function send(message) {
 }
 
 function sendMessage(message) {
+	console.log('send message', message);
 	initConnection(message);
 }
 
@@ -69,4 +70,9 @@ function addListener(event, listener) {
 		listeners[event] = [];
 	}
 	listeners[event].push(listener);
+}
+
+function disconnect() {
+	socket.close();
+	socket = null;
 }

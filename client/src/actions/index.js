@@ -65,13 +65,17 @@ export function authError(error) {
 	};
 }
 
-export function logoutUser() {
-	localStorage.removeItem('token');
-	localStorage.removeItem('user');
-	
-	console.log('logout action', ws);
-
+export function logoutUserAction() {
 	return { type: UNAUTH_USER };
+}
+
+export function logoutUser() {
+	return function(dispatch) {
+		console.log('logout', ws.socket);
+		localStorage.removeItem('token');
+		localStorage.removeItem('user');
+		dispatch(logoutUserAction());
+	};
 }
 
 export function getAllUsers() {
@@ -100,14 +104,13 @@ export function getAllUsers() {
 }
 
 export function sendMessage(msg) {
-	return function(dispatch) {
-		const { message, username } = msg;
+	console.log('send-message action');
+	const { message, user } = msg;
 
+	return function(dispatch) {
 		dispatch({
 			type: SEND_MESSAGE,
-			payload: {
-				message: `${username} >> ${message}`
-			}
+			payload: { user: user, message: message }
 		});
 	};
 }
@@ -117,7 +120,7 @@ export function joinChat(username) {
 	return function(dispatch) {
 		dispatch({
 			type: JOIN_CHAT,
-			payload: `${username} joined to chat`
+			payload: { user: username, message: 'joined to chat' }
 		});
 	};
 }

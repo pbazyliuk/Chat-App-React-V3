@@ -47,7 +47,6 @@ class AppContainer extends React.Component {
 						<Route path="/auth" component={AuthContainer} />
 						<Route path="/:params" component={PageNotFound} />
 					</Switch>
-					<WebSockets />
 				</div>
 			</Router>
 		);
