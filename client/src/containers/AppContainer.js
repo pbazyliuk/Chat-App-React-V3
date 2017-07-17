@@ -13,6 +13,8 @@ import { connect } from 'react-redux';
 // import * as actionCreators from '../actions/index';
 
 import App from '../components/App';
+import WebSockets from './WebSockets';
+
 import Navbar from '../components/Navbar/Navbar';
 
 import Home from '../components/Home/Home';
@@ -39,13 +41,13 @@ class AppContainer extends React.Component {
 						<Route exact path="/" component={Home} />
 						<Route
 							path="/chat"
-							render={() => Protected(this.props, <Chats />, '/auth/login', true) } />}
-						/>
-
+							render={() =>
+								Protected(this.props, <Chats />, '/auth/login', true)}
+						/>} />
 						<Route path="/auth" component={AuthContainer} />
-						
 						<Route path="/:params" component={PageNotFound} />
 					</Switch>
+					<WebSockets />
 				</div>
 			</Router>
 		);

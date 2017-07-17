@@ -1,10 +1,14 @@
 import React from 'react';
 import ChatsNavbar from '../ChatsNavbar/ChatsNavbar';
-import ChatsList from '../ChatsList/ChatsList';
+import UsersList from '../UsersList/UsersList';
 import ChatsDetails from '../ChatsDetails/ChatsDetails';
 import ChatsMenu from '../ChatsMenu/ChatsMenu';
 
+import io from 'socket.io-client';
+
 import styles from './Chats.scss';
+
+// const ROOT_URL = 'http://localhost:8090';
 
 class Chats extends React.Component {
 	constructor(props) {
@@ -17,12 +21,20 @@ class Chats extends React.Component {
 
 		this.handleSizeChange = this.handleSizeChange.bind(this);
 		this.handleMenuShow = this.handleMenuShow.bind(this);
+
+		// this.socket = io(ROOT_URL);
+
+		// this.socket.on('server event', function(data) {
+		// 	console.log(data);
+		// });
 	}
 
 	handleSizeChange() {
 		this.setState(prevState => ({
 			isToggleOn: !prevState.isToggleOn
 		}));
+
+		// this.socket.emit('client event', { value: 'message from client' });
 	}
 
 	handleMenuShow() {
@@ -53,7 +65,7 @@ class Chats extends React.Component {
 						data={this.state}
 					/>
 					<ChatsMenu data={this.state} />
-					<ChatsList data={this.state} />
+					<UsersList data={this.state} />
 				</aside>
 				<div
 					className={styles['main-part']}

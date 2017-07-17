@@ -1,88 +1,108 @@
 const jwt = require('jwt-simple');
-const config = require('../config')
+const config = require('../config');
 
 const User = require('../models/user');
 
-
 function tokenForUser(user) {
-    const timestamp = new Date().getTime();
-    return  jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
+	const timestamp = new Date().getTime();
+	return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
 }
 
 exports.login = function(req, res, next) {
-    //User has already had thero email and password auth'd
-    //We just need to give them a token
-    // res.send({ token: tokenForUser(req.user)})
-   
-    User.findOne({'email': req.user.email}, {_id: 1, firstname: 1, lastname: 1, email: 1}, function(err, curUser) {
-    if (err) { return next(err); }
+	//User has already had thero email and password auth'd
+	//We just need to give them a token
+	// res.send({ token: tokenForUser(req.user)})
 
-    if (curUser) {
-        res.send({ token: tokenForUser(req.user), user: curUser });
-    }
-   });
-}
+	User.findOne(
+		{ email: req.user.email },
+		{ _id: 1, firstname: 1, lastname: 1, email: 1 },
+		function(err, curUser) {
+			if (err) {
+				return next(err);
+			}
 
+			if (curUser) {
+				res.send({ token: tokenForUser(req.user), user: curUser });
+			}
+		}
+	);
+};
 
 exports.register = function(req, res, next) {
-    console.log(req.body)
-    const email = req.body.email;
-    const password = req.body.password;
-    const firstname = req.body.firstname;
-    const lastname = req.body.lastname;
-  
-    // res.send({ success: 'true'});
+	console.log(req.body);
+	const email = req.body.email;
+	const password = req.body.password;
+	const firstname = req.body.firstname;
+	const lastname = req.body.lastname;
 
-    //write validation for email and password
+	// res.send({ success: 'true'});
 
-    if(!email || !password) {
-        return res.status(422).send({ error: 'You must provide valid email and password'})
-    }
+	//write validation for email and password
 
-    //See if user with the given email exist
-    User.findOne({ email: email}, function(err, existingUser) {
-        if(err) { return next(err);}
+	if (!email || !password) {
+		return res
+			.status(422)
+			.send({ error: 'You must provide valid email and password' });
+	}
 
-        //If a user with email does exist, return an error
-        if(existingUser) {
-            return res.status(422).send({ error: 'Email is in use'})
-        }
+	//See if user with the given email exist
+	User.findOne({ email: email }, function(err, existingUser) {
+		if (err) {
+			return next(err);
+		}
 
-        //if a user with email does not exist, create and save user record
-        const user = new User({ 
-            firstname: firstname,
-            lastname: lastname,
-            email: email,
-            password: password
-        })
+		//If a user with email does exist, return an error
+		if (existingUser) {
+			return res.status(422).send({ error: 'Email is in use' });
+		}
 
-        user.save(function(err) {
-            if (err) { return next(err); }
-      
-            console.log(user)
+		//if a user with email does not exist, create and save user record
+		const user = new User({
+			firstname: firstname,
+			lastname: lastname,
+			email: email,
+			password: password,
+			isLogged: false
+		});
 
-            User.findOne({ email: email}, {_id: 1, firstname: 1, lastname: 1, email: 1},
-            function(err, curUser) {
-                if (err) { return next(err); }
+		user.save(function(err) {
+			if (err) {
+				return next(err);
+			}
 
-                if(curUser) {
-                     // Respond to request indicating the user was created
-                    res.json({ token: tokenForUser(user), user: curUser});
-                }
-            });
-        });
-    })
-}
+			console.log(user);
+
+			User.findOne(
+				{ email: email },
+				{ _id: 1, firstname: 1, lastname: 1, email: 1 },
+				function(err, curUser) {
+					if (err) {
+						return next(err);
+					}
+
+					if (curUser) {
+						// Respond to request indicating the user was created
+						res.json({ token: tokenForUser(user), user: curUser });
+					}
+				}
+			);
+		});
+	});
+};
 
 exports.getAllUsers = function(req, res, next) {
+	User.find(
+		{},
+		{ _id: 1, firstname: 1, lastname: 1, email: 1, isLogged: 1 },
+		function(err, users) {
+			if (err) {
+				return next(err);
+			}
 
-    User.find({}, {_id: 1, firstname: 1, lastname: 1, email: 1}, function(err, users) {
-        if (err) { return next(err); }
-
-        if(users) {
-            console.log(users);
-            res.send(users);
-        }
-
-      });
-  }
+			if (users) {
+				console.log(users);
+				res.send(users);
+			}
+		}
+	);
+};

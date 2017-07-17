@@ -1,7 +1,15 @@
 import axios from 'axios';
 import { history } from '../history/history';
 
-import { AUTH_USER, UNAUTH_USER, AUTH_ERROR, GET_ALL_USERS } from '../actionsTypes/index.js';
+import {
+	AUTH_USER,
+	UNAUTH_USER,
+	AUTH_ERROR,
+	GET_ALL_USERS,
+	JOIN_CHAT,
+	SEND_MESSAGE,
+	LEAVE_CHAT
+} from '../actionsTypes/index.js';
 
 const ROOT_URL = 'http://localhost:8090';
 
@@ -11,8 +19,8 @@ export function registerUser({ firstname, lastname, email, password }) {
 		axios
 			.post(`${ROOT_URL}/register`, { firstname, lastname, email, password })
 			.then(response => {
-				dispatch({ type: AUTH_USER, payload: response.data.user });
 				localStorage.setItem('token', response.data.token);
+				dispatch({ type: AUTH_USER, payload: response.data.user });
 
 				history.push('/chat');
 			})
@@ -32,13 +40,11 @@ export function loginUser({ email, password }) {
 			.then(response => {
 				// If request is good...
 				// - Update state to indicate user is authenticated
-
-				dispatch({ type: AUTH_USER, payload: response.data.user });
-
 				// - Save the JWT token
 				localStorage.setItem('token', response.data.token);
 
-				
+				dispatch({ type: AUTH_USER, payload: response.data.user });
+
 				// - redirect to the route '/chats'
 				history.push('/chat');
 			})
@@ -64,26 +70,64 @@ export function logoutUser() {
 	return { type: UNAUTH_USER };
 }
 
-
 export function getAllUsers() {
 	return function(dispatch) {
 		// Submit email/password to the server
 		console.error('get all user action', localStorage.getItem('token'));
-		axios.get(`${ROOT_URL}/api/users`, 
-				{ headers: { 
+		axios
+			.get(`${ROOT_URL}/api/users`, {
+				headers: {
 					'Content-Type': 'application/json',
-					// 'authorization': localStorage.getItem('token')
-				} })
+					authorization: localStorage.getItem('token')
+				}
+			})
 			.then(response => {
 				// If request is good...
 				// - Update state to indicate user is authenticated
 				console.error('Get All Users Action', response.data);
-				dispatch({ type: GET_ALL_USERS, payload: response.data});
+				dispatch({ type: GET_ALL_USERS, payload: response.data });
 			})
 			.catch(() => {
 				// If request is bad...
 				// - Show an error to the user
 				dispatch(authError('Some problems occurs with users fetch action'));
 			});
+	};
+}
+
+export function sendMessage(msg) {
+	return function(dispatch) {
+		const { message, username } = msg;
+
+		dispatch({
+			type: SEND_MESSAGE,
+			payload: {
+				message: `${username} >> ${message}`
+			}
+		});
+	};
+}
+
+export function joinChat(username) {
+	console.log('join action');
+	return function(dispatch) {
+		dispatch({
+			type: JOIN_CHAT,
+			payload: {
+				username: `${username} joined to chat`
+			}
+		});
+	};
+}
+
+export function leaveChat(username) {
+	console.log('leave action');
+	return function(dispatch) {
+		dispatch({
+			type: LEAVE_CHAT,
+			payload: {
+				username: `${username} left chat`
+			}
+		});
 	};
 }
